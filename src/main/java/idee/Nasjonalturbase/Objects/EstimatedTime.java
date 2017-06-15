@@ -38,4 +38,18 @@ public class EstimatedTime {
         this.hours = hours;
         this.minutes = minutes;
     }
+
+    public String toString() {
+        String toString = "";
+        if (days != 0) {
+            toString += days + "d";
+        }
+        if (hours != 0) {
+            toString += hours + "h";
+        }
+        if (minutes != 0) {
+            toString += minutes + "m";
+        }
+        return toString;
+    }
 }

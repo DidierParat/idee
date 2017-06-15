@@ -40,4 +40,8 @@ public class Link {
         this.type = type;
         this.url = url;
     }
+
+    public String toString() {
+        return "title: " + title + ", type: " + type + ", url: " + url;
+    }
 }

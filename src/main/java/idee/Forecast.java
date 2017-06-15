@@ -27,6 +27,7 @@ public class Forecast {
     private static final String TO_ATTRIBUTE = "to";
     private static final String PERCENT_ATTRIBUTE = "percent";
 
+    // Order is important to compare weather. From Sunny (0) best to rainy (3) worst
     public enum Weather {
         Sunny,
         PartiallyCloudy,
@@ -44,12 +45,12 @@ public class Forecast {
     }
 
     private String formatDateForApi(final Calendar day) {
-        // 2017-03-03T12:00:00Z
+        // Format from the API: 2017-03-03T12:00:00Z
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(day.getTime()) + "T12:00:00Z";
     }
 
-    // TODO What about rainy and snowy ?
+    // TODO support rainy and snowy
     private Weather extractWeatherFromXml(final Calendar day, final String xmlForecast)
             throws JDOMException, IOException {
         final String formattedDate = formatDateForApi(day);

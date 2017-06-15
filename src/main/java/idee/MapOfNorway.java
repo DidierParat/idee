@@ -22,6 +22,8 @@ public class MapOfNorway {
     private static final String SERIALIZED_HASHMAP_NAME = "areaHashmap.ser";
     private static final Logger LOGGER = Logger.getLogger(MapOfNorway.class.getName());
 
+    private HashMap<String, Area> areaMap;
+
     public Integer distanceInKm(final Location locationA, final Location locationB) {
         final Double longitudeA = locationA.getLongitude();
         final Double latitudeA = locationA.getLatitude();
@@ -80,11 +82,9 @@ public class MapOfNorway {
     public Set<Area> getNearbyAreas(
             final Location userLocation,
             final Integer searchRadiusKm) {
-        Set<Area> areasNearby = new HashSet<>();
-        Collection<Area> areas = areaMap.values();
-        Iterator<Area> areasIte = areas.iterator();
-        while (areasIte.hasNext()) {
-            Area area = areasIte.next();
+        final Set<Area> areasNearby = new HashSet<>();
+        final Collection<Area> areas = areaMap.values();
+       for (final Area area:areas) {
             final Integer distanceBetweenAreaAndUser = distanceInKm(userLocation, area.getCenter());
             LOGGER.fine(
                     "Area: "
@@ -98,6 +98,4 @@ public class MapOfNorway {
         }
         return areasNearby;
     }
-
-    private HashMap<String, Area> areaMap;
 }

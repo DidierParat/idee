@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.apache.commons.cli.*;
 
 /**
  * Created by didier on 20.01.17.
@@ -19,12 +20,18 @@ public final class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static void main(final String[] args) {
-        Config config = new Config(args);
+        Config config;
+        try {
+            config = new Config(args);
+        } catch (ParseException e) {
+            LOGGER.severe("Could not parse args." + e);
+            return;
+        }
 
         // User preferences
         final Location userLocation = new Location(10.729174, 59.916649);
         final Integer searchRadiusKm = 20;
-        final Forecast.Weather userWeatherPreference = Forecast.Weather.Cloudy;
+        final Forecast.Weather userWeatherPreference = Forecast.Weather.Sunny;
 
         // Initialize
         final AdaptiveClient adaptiveClient = new AdaptiveClient();
@@ -35,7 +42,7 @@ public final class Main {
         final MapOfNorway mapOfNorway = new MapOfNorway(dntClient);
 
         // Get areas nearby
-        Set<Area> areasNearby = mapOfNorway.getNearbyAreas(userLocation, searchRadiusKm);
+        final Set<Area> areasNearby = mapOfNorway.getNearbyAreas(userLocation, searchRadiusKm);
         if (areasNearby.isEmpty()) {
             LOGGER.info("No area found nearby your location. "
                     + "Either increase the search radius or consider relocating.");
@@ -43,17 +50,15 @@ public final class Main {
         }
 
         // Get weather of nearby cities and filter cities on weather
-        Iterator<Area> areasNearbyIte = areasNearby.iterator();
-        Set<Forecast> forecastNearbyAreas = new HashSet<>();
-        while (areasNearbyIte.hasNext()) {
-            Area area = areasNearbyIte.next();
+        final Set<Forecast> forecastNearbyAreas = new HashSet<>();
+        for (final Area area:areasNearby) {
             try {
-                Forecast forecast = locationForecastClient.getWeather(area, saturday);
-                if (forecast.getWeather().equals(userWeatherPreference)) {
+                final Forecast forecast = locationForecastClient.getWeather(area, saturday);
+                if (forecast.getWeather().ordinal() <= userWeatherPreference.ordinal()) {
                     forecastNearbyAreas.add(forecast);
                 }
             } catch (Exception e) {
-                LOGGER.warning(
+                LOGGER.severe(
                         "Could not get forecast for area "
                         + area.getId()
                         + ". Exception: "
@@ -62,16 +67,15 @@ public final class Main {
             }
         }
         if (forecastNearbyAreas.isEmpty()) {
-            LOGGER.severe("No area with weather forecast corresponding to user's preferences.");
+            LOGGER.info("No area with weather forecast corresponding to user's preferences.");
             return;
         }
 
         // Get suggested trips in these areas
-        Iterator<Forecast> forecastNearbyAreasIte = forecastNearbyAreas.iterator();
-        Set<Trip> trips = new HashSet<>();
-        while(forecastNearbyAreasIte.hasNext()) {
-            Area area = forecastNearbyAreasIte.next().getArea();
-            Trip trip;
+        final Set<Trip> trips = new HashSet<>();
+        for(final Forecast forecast:forecastNearbyAreas) {
+            final Area area = forecast.getArea();
+            final Trip trip;
             final String areaId = area.getId();
             try {
                 trip = dntClient.getTripPerArea(areaId);
@@ -79,7 +83,10 @@ public final class Main {
                 LOGGER.warning("Could not get trips for area " + areaId + ". Exception: " + e);
                 continue;
             }
-            trips.add(trip);
+            // Some trips might be in several areas
+            if (!isDuplicatedTrip(trips, trip)) {
+                trips.add(trip);
+            }
         }
         if (trips.isEmpty()) {
             LOGGER.severe("No trips found.");
@@ -87,9 +94,28 @@ public final class Main {
         }
 
         LOGGER.info("I found " + trips.size() + " trips that could interest you!");
-        for(Iterator tripsIte = trips.iterator(); tripsIte.hasNext();) {
-            LOGGER.info(tripsIte.next().toString());
+        for(Iterator<Trip> tripsIte = trips.iterator(); tripsIte.hasNext();) {
+            prettyPrint(tripsIte.next());
         }
+    }
+
+    private static boolean isDuplicatedTrip(final Set<Trip> trips, final Trip newTrip) {
+        for(final Trip trip:trips) {
+            if (trip.getId().equals(newTrip.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void prettyPrint(final Trip trip) {
+        System.out.println("===");
+        System.out.println("name: " + trip.getName());
+        System.out.println("description: " + trip.getDescription());
+        System.out.println("distance: " + trip.getDistance()/1000 + "km");
+        System.out.println("normal time spent: " + trip.getTimeSpent().getNormal());
+        System.out.println("links: " + trip.getLinks());
+        System.out.println("url: " + trip.getUrl());
     }
 
     private static Calendar getNextSaturday() {

@@ -26,4 +26,16 @@ public class TimeSpent {
         this.max = max;
         this.min = min;
     }
+
+    public EstimatedTime getNormal() {
+        return normal;
+    }
+
+    public EstimatedTime getMin() {
+        return min;
+    }
+
+    public EstimatedTime getMax() {
+        return max;
+    }
 }
