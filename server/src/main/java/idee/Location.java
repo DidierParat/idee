@@ -2,9 +2,6 @@ package idee;
 
 import java.io.Serializable;
 
-/**
- * Created by didier on 27.01.17.
- */
 public class Location implements Serializable {
     private final Double longitude;
     private final Double latitude;

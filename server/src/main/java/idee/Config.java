@@ -1,6 +1,5 @@
 package idee;
 
-import java.util.logging.*;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -8,9 +7,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-/**
- * Created by didier on 14.06.17.
- */
 public class Config {
     private static final String ARG_DNT_HOST = "dntHost";
     private static final String ARG_DNT_API_KEY = "dntApiKey";

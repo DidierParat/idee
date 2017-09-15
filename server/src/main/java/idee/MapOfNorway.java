@@ -14,9 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-/**
- * Created by didier on 19.01.17.
- */
 public class MapOfNorway {
     private static final String SERIALIZED_HASHMAP_NAME = "areaHashmap.ser";
     private static final Logger LOGGER = Logger.getLogger(MapOfNorway.class.getName());
@@ -58,7 +55,7 @@ public class MapOfNorway {
                         + ". Caught exception: " + e);
             }
         } else {
-            // we save these from DNT to avoid spamming each request
+            // save areas from DNT to avoid spamming during each request
             this.areaMap = new HashMap<>();
             try {
                 final String[] areasIds = dntClient.getAreasIds();

@@ -9,9 +9,6 @@ import javax.ws.rs.core.*;
 import jersey.repackaged.com.google.common.collect.*;
 import org.json.*;
 
-/**
- * Created by didier on 18.06.17.
- */
 @Path("/")
 public class GetIdeasResource {
     private static final Logger LOGGER = Logger.getLogger(GetIdeasResource.class.getName());

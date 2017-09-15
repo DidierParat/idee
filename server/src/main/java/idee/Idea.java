@@ -3,9 +3,6 @@ package idee;
 import idee.Nasjonalturbase.*;
 import org.json.*;
 
-/**
- * Created by didier on 18.06.17.
- */
 public class Idea {
     private static final String FIELD_DISTANCE = "distance";
     private static final String FIELD_DURATION = "duration";

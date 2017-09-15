@@ -4,24 +4,17 @@ import idee.Nasjonalturbase.Area;
 import idee.Nasjonalturbase.BaseObjects.GenericObject;
 import idee.Nasjonalturbase.ListOfGenericObjects;
 import idee.Nasjonalturbase.Trip;
+import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
-import static idee.Nasjonalturbase.TurbaseConstants.COUNT;
 import static idee.Nasjonalturbase.TurbaseConstants.DOCUMENTS;
 import static idee.Nasjonalturbase.TurbaseConstants.ID;
-import static idee.Nasjonalturbase.TurbaseConstants.TOTAL;
 
-/**
- * Created by didier on 27.01.17.
- */
-public class DntClient {
+public class DntClient extends AdaptiveClient {
     private static final String OBJECT_TYPE_AREAS = "omr%C3%A5der";
     private static final String OBJECT_TYPE_TUR = "turer";
     private static final String MAX_OBJECTS_PER_REQUEST = "50";
@@ -33,71 +26,78 @@ public class DntClient {
     private static final Logger LOGGER = Logger.getLogger(DntClient.class.getName());
     private final String host;
     private final String apiKey;
-    private final AdaptiveClient adaptiveClient;
 
-    public DntClient(final String host, final String apiKey, final AdaptiveClient adaptiveClient) {
-        this.adaptiveClient = adaptiveClient;
+    public DntClient(final String host, final String apiKey) {
         this.host = host;
         this.apiKey = apiKey;
     }
 
     public String[] getAreasIds()
-            throws URISyntaxException, IOException, AdaptiveClient.RateLimitExceededException {
-        final URI requestFirstBatchOfAreas = buildAreasRequestUri(0);
-        final ListOfGenericObjects firstBatchOfAreas
-                = adaptiveClient.getData(requestFirstBatchOfAreas, ListOfGenericObjects.class);
-        final int totalNumberOfAreas = firstBatchOfAreas.getTotal();
-        final String[] areasIds = new String[totalNumberOfAreas];
+            throws ClientException {
+        final URIBuilder areasRequest = buildAreasRequest();
+        return getAllIds(areasRequest);
+    }
 
-        Integer numberOfRetrievedAreas = firstBatchOfAreas.getCount();
-        final int remainingNumberAreas = totalNumberOfAreas - numberOfRetrievedAreas;
+    private String[] getAllIds(final URIBuilder request)
+            throws ClientException {
+        request.addParameter(SKIP_PARAM, "0");
+        final ListOfGenericObjects firstBatch
+                = getData(request, ListOfGenericObjects.class);
+        final int totalNumberOfObjects = firstBatch.getTotal();
+        final String[] objectIds = new String[totalNumberOfObjects];
+
+        Integer numberOfRetrievedObjects = firstBatch.getCount();
+        final int remainingNumberAreas = totalNumberOfObjects - numberOfRetrievedObjects;
         int remainingNumberOfRequests
                 = remainingNumberAreas / MAX_OBJECTS_PER_REQUEST_INT;
         if (remainingNumberAreas % MAX_OBJECTS_PER_REQUEST_INT != 0) {
             remainingNumberOfRequests++;
         }
         LOGGER.info(
-                "Retrieving areas IDs: got "
-                + numberOfRetrievedAreas
+                "Retrieving object IDs: got "
+                + totalNumberOfObjects
                 + " items, total "
-                + totalNumberOfAreas
+                + numberOfRetrievedObjects
                 + ", remaining requests "
                 + remainingNumberOfRequests);
-
-        GenericObject[] areasIdArray = firstBatchOfAreas.getDocuments();
-        for (int i = 0; i < areasIdArray.length; ++i) {
-            areasIds[i] = areasIdArray[i].getId();
-        }
 
         for (int requestsCounter = 0;
              requestsCounter < remainingNumberOfRequests;
              ++requestsCounter) {
-            final URI requestNextBatch = buildAreasRequestUri(numberOfRetrievedAreas);
+            request.setParameter(SKIP_PARAM, numberOfRetrievedObjects.toString());
             final ListOfGenericObjects nextBatchOfAreas
-                    = adaptiveClient.getData(requestNextBatch, ListOfGenericObjects.class);
-            areasIdArray = nextBatchOfAreas.getDocuments();
-            for (int i = numberOfRetrievedAreas; i < areasIdArray.length; ++i) {
-                areasIds[i] = areasIdArray[i].getId();
+                    = getData(request, ListOfGenericObjects.class);
+            final GenericObject[] genericObjectList = nextBatchOfAreas.getDocuments();
+            for (int i = nextBatchOfAreas.getCount(); i < genericObjectList.length; ++i) {
+                objectIds[i] = genericObjectList[i].getId();
             }
-            numberOfRetrievedAreas += nextBatchOfAreas.getCount();
+            numberOfRetrievedObjects += nextBatchOfAreas.getCount();
         }
-        return areasIds;
+        return objectIds;
+    }
+
+    private void extractIdsFromList(
+            final String[] objectIds, final ListOfGenericObjects listOfGenericObjects) {
+        final GenericObject[] objectIdArray = listOfGenericObjects.getDocuments();
+        for (int i = 0; i < objectIdArray.length; ++i) {
+            objectIds[i] = objectIdArray[i].getId();
+        }
     }
 
     public Area getArea(final String areaId)
-            throws URISyntaxException, IOException, AdaptiveClient.RateLimitExceededException {
+            throws ClientException {
         final String link = host + "/" + OBJECT_TYPE_AREAS + "/" + areaId;
-        final URI uri = createBaseRequestUriBuilder(link, 0).build();
-        return adaptiveClient.getData(uri, Area.class);
+        final URIBuilder uriBuilder = createBaseRequestUriBuilder(link);
+        return getData(uriBuilder, Area.class);
     }
 
     // TODO handle several trips (do not forget limit per request)
     public Trip getTripPerArea(final String areaId)
-            throws URISyntaxException, IOException, AdaptiveClient.RateLimitExceededException {
-        final URI tripsInAreaRequest = buildTripsInAreaRequestUri(areaId, 0);
+            throws ClientException {
+        final URIBuilder tripsInAreaRequest = buildTripsInAreaRequestUri(areaId);
 
         final JSONObject replyJson
-                = new JSONObject(adaptiveClient.getData(tripsInAreaRequest, String.class));
+                = new JSONObject(getData(tripsInAreaRequest, String.class));
         final JSONArray tripsInAreaJson = replyJson.getJSONArray(DOCUMENTS);
         if (tripsInAreaJson.length() == 0) {
             return null;
@@ -107,34 +107,34 @@ public class DntClient {
     }
 
     private URIBuilder createBaseRequestUriBuilder(
-            final String endpoint, final Integer numberOfObjectsToSkip) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(endpoint);
-        if (numberOfObjectsToSkip == 0) {
-            uriBuilder.addParameter(SKIP_PARAM, numberOfObjectsToSkip.toString());
+            final String endpoint) throws ClientException {
+        final URIBuilder uriBuilder;
+        try {
+            uriBuilder = new URIBuilder(endpoint);
+        } catch (URISyntaxException e) {
+            throw new ClientException("Could not create base request for endpoint: " + endpoint, e);
         }
         uriBuilder.addParameter(LIMIT_PARAM, MAX_OBJECTS_PER_REQUEST);
         uriBuilder.addParameter(API_KEY_PARAM, apiKey);
         return uriBuilder;
     }
 
-    private URI buildAreasRequestUri(
-            final Integer numberOfObjectsToSkip) throws URISyntaxException {
+    private URIBuilder buildAreasRequest() throws ClientException {
         final String areaEndpoint = host + "/" + OBJECT_TYPE_AREAS;
-        return createBaseRequestUriBuilder(areaEndpoint, numberOfObjectsToSkip).build();
+        return createBaseRequestUriBuilder(areaEndpoint);
     }
 
-    private URI buildTripsInAreaRequestUri(
-            final String areaId, final Integer numberOfObjectsToSkip) throws URISyntaxException {
+    private URIBuilder buildTripsInAreaRequestUri(
+            final String areaId) throws ClientException {
         final String tripEndpoint = host + "/" + OBJECT_TYPE_TUR;
-        return createBaseRequestUriBuilder(tripEndpoint, numberOfObjectsToSkip)
-                .addParameter(AREAS_PARAM, areaId)
-                .build();
+        return createBaseRequestUriBuilder(tripEndpoint)
+                .addParameter(AREAS_PARAM, areaId);
     }
 
     private Trip getTrip(final String tripId)
-            throws URISyntaxException, IOException, AdaptiveClient.RateLimitExceededException {
+            throws ClientException {
         final String tripEndpoint = host + "/" + OBJECT_TYPE_TUR + "/" + tripId;
-        final URI tripRequest = createBaseRequestUriBuilder(tripEndpoint, 0).build();
-        return adaptiveClient.getData(tripRequest, Trip.class);
+        final URIBuilder tripRequest = createBaseRequestUriBuilder(tripEndpoint);
+        return getData(tripRequest, Trip.class);
     }
 }

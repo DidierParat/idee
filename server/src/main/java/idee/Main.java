@@ -10,9 +10,6 @@ import org.eclipse.jetty.servlet.*;
 import org.glassfish.jersey.server.*;
 import org.glassfish.jersey.servlet.*;
 
-/**
- * Created by didier on 20.01.17.
- */
 public final class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
@@ -25,10 +22,9 @@ public final class Main {
             return;
         }
 
-        final AdaptiveClient adaptiveClient = new AdaptiveClient();
         final LocationForecastClient locationForecastClient
-                = new LocationForecastClient(adaptiveClient);
-        final DntClient dntClient = new DntClient(config.dntHost, config.dntApiKey, adaptiveClient);
+                = new LocationForecastClient();
+        final DntClient dntClient = new DntClient(config.dntHost, config.dntApiKey);
         final MapOfNorway mapOfNorway = new MapOfNorway(dntClient);
 
         ResourceConfig resourceConfig = new ResourceConfig();

@@ -13,9 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * Created by didier on 19.01.17.
- */
 public class Forecast {
     private static final Logger LOGGER = Logger.getLogger(Forecast.class.getName());
     private static final String PRODUCT_CHILD_NAME = "product";

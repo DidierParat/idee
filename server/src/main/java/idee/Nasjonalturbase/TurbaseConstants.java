@@ -1,8 +1,5 @@
 package idee.Nasjonalturbase;
 
-/**
- * Created by didier on 19.01.17.
- */
 public interface TurbaseConstants {
     // Fields found in JSON replies with several items
     String DOCUMENTS = "documents";
