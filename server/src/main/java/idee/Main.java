@@ -1,6 +1,5 @@
 package idee;
 
-import idee.Clients.AdaptiveClient;
 import idee.Clients.DntClient;
 import idee.Clients.LocationForecastClient;
 import java.util.logging.Logger;

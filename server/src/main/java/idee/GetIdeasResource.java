@@ -20,6 +20,7 @@ public class GetIdeasResource {
     private final DntClient dntClient;
     private final LocationForecastClient locationForecastClient;
     private final MapOfNorway mapOfNorway;
+
     public GetIdeasResource(
             final DntClient dntClient,
             final LocationForecastClient locationForecastClient,
@@ -47,8 +48,7 @@ public class GetIdeasResource {
         // Get areas nearby
         final Set<Area> areasNearby = mapOfNorway.getNearbyAreas(userLocation, searchRadiusKm);
         if (areasNearby.isEmpty()) {
-            LOGGER.info("No area found nearby your location. "
-                    + "Either increase the search radius or consider relocating.");
+            LOGGER.info("No area found nearby the provided location.");
             return createJsonResponse(ImmutableSet.of());
         }
 

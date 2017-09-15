@@ -10,8 +10,8 @@ public class Idea {
     private static final String FIELD_URL = "url";
     private static final String FIELD_WEATHER_FORECAST = "weather_forecast";
 
-    private final Trip trip;
     private final Forecast forecast;
+    private final Trip trip;
 
     public Idea(final Trip trip, final Forecast forecast) {
         this.trip = trip;
