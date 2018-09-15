@@ -89,42 +89,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.telenordigital.headerinjected.Main</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Vendor>com.telenordigital</Implementation-Vendor>
-                            <Implementation-Version>${project.artifactId}-${project.version}</Implementation-Version>
-                        </manifestEntries>
-                    </archive>
-                    <finalName>${project.artifactId}-original</finalName>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.comoyo.commons</groupId>
-                <artifactId>emjar-maven-plugin</artifactId>
-                <version>1.4.58</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <mainJar>target/${project.artifactId}-original.jar</mainJar>
-                            <finalName>${project.artifactId}</finalName>
-                            <bundleSuffix>NONE</bundleSuffix>
-                            <conflictsFatal>true</conflictsFatal>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.18.1</version>
                 <configuration>
@@ -134,24 +98,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>com.telenordigital.headerinjected.Main</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>
@@ -161,7 +110,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
+                    <configLocation>google_checks.xml</configLocation>
                     <encoding>UTF-8</encoding>
                     <failsOnError>true</failsOnError>
                     <consoleOutput>true</consoleOutput>
