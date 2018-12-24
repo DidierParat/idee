@@ -1,9 +1,9 @@
 package idee.utils;
 
-import idee.Clients.DntClient;
-import idee.models.Nasjonalturbase.Area;
-
+import idee.clients.DntClient;
 import idee.models.Location;
+import idee.models.nasjonalturbase.Area;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,39 +23,39 @@ public class MapOfNorway {
 
   private Map<String, Area> areaMap;
 
-  public Integer distanceInKm(final Location locationA, final Location locationB) {
+  private Integer distanceInKm(final Location locationA, final Location locationB) {
     final Double longitudeA = locationA.getLongitude();
     final Double latitudeA = locationA.getLatitude();
     final Double longitudeB = locationB.getLongitude();
     final Double latitudeB = locationB.getLatitude();
 
     Integer earthRadius = 6371; //km
-    Double dLat = Math.toRadians(latitudeB - latitudeA);
-    Double dLng = Math.toRadians(longitudeB - longitudeA);
-    Double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+    Double deltaLatitude = Math.toRadians(latitudeB - latitudeA);
+    Double deltaLongitude = Math.toRadians(longitudeB - longitudeA);
+    Double haversineA = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2)
         + Math.cos(Math.toRadians(latitudeA))
         * Math.cos(Math.toRadians(latitudeB))
-        * Math.sin(dLng / 2)
-        * Math.sin(dLng / 2);
-    Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    Double dist = (earthRadius * c);
+        * Math.sin(deltaLongitude / 2)
+        * Math.sin(deltaLongitude / 2);
+    Double haversineC = 2 * Math.atan2(Math.sqrt(haversineA), Math.sqrt(1 - haversineA));
+    Double dist = (earthRadius * haversineC);
     return dist.intValue();
   }
 
   public MapOfNorway(final DntClient dntClient) {
-    File f = new File(SERIALIZED_MAP_NAME);
-    if (f.exists() && !f.isDirectory()) {
+    File serializedMapFile = new File(SERIALIZED_MAP_NAME);
+    if (serializedMapFile.exists() && !serializedMapFile.isDirectory()) {
       try {
         FileInputStream fis = new FileInputStream(SERIALIZED_MAP_NAME);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        this.areaMap = (HashMap) ois.readObject();
+        this.areaMap = (Map<String, Area>) ois.readObject();
         ois.close();
         fis.close();
-      } catch (Exception e) {
+      } catch (Exception exception) {
         LOGGER.severe(
             "Could not deserialize "
                 + SERIALIZED_MAP_NAME
-                + ". Caught exception: " + e);
+                + ". Caught exception: " + exception);
       }
     } else {
       // save areas from DNT to avoid spamming during each request
@@ -72,8 +72,8 @@ public class MapOfNorway {
         oos.writeObject(areaMap);
         oos.close();
         fos.close();
-      } catch (Exception e) {
-        LOGGER.severe("Could not populate MapOfNorway from DNT. Caught exception: " + e);
+      } catch (Exception exception) {
+        LOGGER.severe("Could not populate MapOfNorway from DNT. Caught exception: " + exception);
       }
     }
   }

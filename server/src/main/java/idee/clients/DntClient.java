@@ -1,18 +1,18 @@
-package idee.Clients;
+package idee.clients;
 
-import idee.models.Nasjonalturbase.Area;
-import idee.models.Nasjonalturbase.BaseObjects.GenericObject;
-import idee.models.Nasjonalturbase.ListOfGenericObjects;
-import idee.models.Nasjonalturbase.Trip;
-import java.net.URISyntaxException;
+import static idee.models.nasjonalturbase.TurbaseConstants.DOCUMENTS;
+import static idee.models.nasjonalturbase.TurbaseConstants.ID;
+
+import idee.models.nasjonalturbase.Area;
+import idee.models.nasjonalturbase.ListOfGenericObjects;
+import idee.models.nasjonalturbase.Trip;
+import idee.models.nasjonalturbase.baseobjects.GenericObject;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.util.logging.Logger;
-
-import static idee.models.Nasjonalturbase.TurbaseConstants.DOCUMENTS;
-import static idee.models.Nasjonalturbase.TurbaseConstants.ID;
 
 public class DntClient extends AdaptiveClient {
 
@@ -109,8 +109,10 @@ public class DntClient extends AdaptiveClient {
     final URIBuilder uriBuilder;
     try {
       uriBuilder = new URIBuilder(endpoint);
-    } catch (URISyntaxException e) {
-      throw new ClientException("Could not create base request for endpoint: " + endpoint, e);
+    } catch (URISyntaxException exception) {
+      throw new ClientException(
+          "Could not create base request for endpoint: " + endpoint,
+          exception);
     }
     uriBuilder.addParameter(LIMIT_PARAM, MAX_OBJECTS_PER_REQUEST);
     uriBuilder.addParameter(API_KEY_PARAM, apiKey);

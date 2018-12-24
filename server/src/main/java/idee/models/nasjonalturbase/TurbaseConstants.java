@@ -1,4 +1,4 @@
-package idee.models.Nasjonalturbase;
+package idee.models.nasjonalturbase;
 
 public interface TurbaseConstants {
 

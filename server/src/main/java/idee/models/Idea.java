@@ -1,7 +1,7 @@
 package idee.models;
 
-import idee.models.Nasjonalturbase.*;
-import org.json.*;
+import idee.models.nasjonalturbase.Trip;
+import org.json.JSONObject;
 
 public class Idea {
 

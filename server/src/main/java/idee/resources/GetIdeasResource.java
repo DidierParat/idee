@@ -1,17 +1,29 @@
 package idee.resources;
 
-import idee.Clients.*;
-import idee.utils.MapOfNorway;
-import idee.models.Nasjonalturbase.*;
+import idee.clients.ClientException;
+import idee.clients.DntClient;
+import idee.clients.LocationForecastClient;
 import idee.models.Forecast;
 import idee.models.Idea;
 import idee.models.Location;
-import java.util.*;
-import java.util.logging.*;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import jersey.repackaged.com.google.common.collect.*;
-import org.json.*;
+import idee.models.nasjonalturbase.Area;
+import idee.models.nasjonalturbase.Trip;
+import idee.utils.MapOfNorway;
+import org.json.JSONArray;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Path("/")
 public class GetIdeasResource {
@@ -54,7 +66,7 @@ public class GetIdeasResource {
     final Set<Area> areasNearby = mapOfNorway.getNearbyAreas(userLocation, searchRadiusKm);
     if (areasNearby.isEmpty()) {
       LOGGER.info("No area found nearby the provided location.");
-      return createJsonResponse(ImmutableSet.of());
+      return createJsonResponse(Collections.emptySet());
     }
 
     // Get weather of nearby cities and filter cities on weather
@@ -65,14 +77,14 @@ public class GetIdeasResource {
         if (forecast.getWeather().ordinal() <= userWeatherPreference.ordinal()) {
           forecastNearbyAreas.add(forecast);
         }
-      } catch (ClientException e) {
-        LOGGER.log(Level.WARNING, "Could not get forecast for area " + area.getId(), e);
-        return createJsonResponse(ImmutableSet.of());
+      } catch (ClientException exception) {
+        LOGGER.log(Level.WARNING, "Could not get forecast for area " + area.getId(), exception);
+        return createJsonResponse(Collections.emptySet());
       }
     }
     if (forecastNearbyAreas.isEmpty()) {
       LOGGER.log(Level.INFO, "No area with weather forecast corresponding to user's preferences.");
-      return createJsonResponse(ImmutableSet.of());
+      return createJsonResponse(Collections.emptySet());
     }
 
     // Get suggested trips in these areas
@@ -83,8 +95,8 @@ public class GetIdeasResource {
       final String areaId = area.getId();
       try {
         trip = dntClient.getTripPerArea(areaId);
-      } catch (ClientException e) {
-        LOGGER.log(Level.WARNING, "Could not get trips for area " + areaId, e);
+      } catch (ClientException exception) {
+        LOGGER.log(Level.WARNING, "Could not get trips for area " + areaId, exception);
         continue;
       }
       // Some trips might be in several areas
@@ -94,7 +106,7 @@ public class GetIdeasResource {
     }
     if (ideas.isEmpty()) {
       LOGGER.warning("No Idea found.");
-      return createJsonResponse(ImmutableSet.of());
+      return createJsonResponse(Collections.emptySet());
     }
 
     LOGGER.info("I found " + ideas.size() + " Ideas!");

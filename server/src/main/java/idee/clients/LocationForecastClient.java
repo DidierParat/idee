@@ -1,11 +1,9 @@
-package idee.Clients;
+package idee.clients;
 
 import idee.models.Forecast;
-import idee.models.Nasjonalturbase.Area;
+import idee.models.nasjonalturbase.Area;
 import org.apache.http.client.utils.URIBuilder;
-import org.jdom.JDOMException;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.logging.Logger;
@@ -27,24 +25,17 @@ public class LocationForecastClient extends AdaptiveClient {
     final URIBuilder requestUrl;
     try {
       requestUrl = createRequest(lon, lat);
-    } catch (URISyntaxException e) {
-      throw new ClientException("Could not create weather request.", e);
+    } catch (URISyntaxException exception) {
+      throw new ClientException("Could not create weather request.", exception);
     }
     final String xmlForecast = getData(requestUrl, String.class);
     final Forecast forecast;
-    try {
-      forecast = new Forecast(area, day, xmlForecast);
-    } catch (JDOMException | IOException e) {
-      throw new ClientException("Could not parse weather.", e);
-    }
+    forecast = new Forecast(area, day, xmlForecast);
     return forecast;
   }
 
   private URIBuilder createRequest(final String lon, final String lat) throws URISyntaxException {
-    URIBuilder uriBuilder = new URIBuilder(API_URL + "/"
-        + API_VERSION + "/?"
-        + "lon=" + lon + ";"
-        + "lat=" + lat);
-    return uriBuilder;
+    return new URIBuilder(
+        API_URL + "/" + API_VERSION + "/?" + "lon=" + lon + ";" + "lat=" + lat);
   }
 }

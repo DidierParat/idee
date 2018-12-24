@@ -1,15 +1,17 @@
-package idee.Clients;
+package idee.clients;
+
+import org.apache.http.client.utils.URIBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.logging.Logger;
+
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.http.client.utils.URIBuilder;
 
 public abstract class AdaptiveClient {
 
@@ -33,8 +35,8 @@ public abstract class AdaptiveClient {
     final URI uri;
     try {
       uri = uriBuilder.build();
-    } catch (URISyntaxException e) {
-      throw new ClientException("Could not build the provided URIBuilder.", e);
+    } catch (URISyntaxException exception) {
+      throw new ClientException("Could not build the provided URIBuilder.", exception);
     }
     LOGGER.info("Connecting to " + uri);
 
@@ -44,8 +46,8 @@ public abstract class AdaptiveClient {
           .target(uri)
           .request(MediaType.APPLICATION_JSON)
           .get();
-    } catch (final ProcessingException e) {
-      throw new ClientException("Could not retrieve " + uri, e);
+    } catch (final ProcessingException exception) {
+      throw new ClientException("Could not retrieve " + uri, exception);
     }
 
     String rateLimitResetString = response.getHeaderString(RATELIMIT_RESET_HEADER_FIELD);

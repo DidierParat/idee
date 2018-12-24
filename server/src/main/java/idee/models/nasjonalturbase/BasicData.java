@@ -1,4 +1,4 @@
-package idee.models.Nasjonalturbase;
+package idee.models.nasjonalturbase;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,16 +34,26 @@ public abstract class BasicData implements Serializable {
 
   @JsonCreator
   public BasicData(
-      @JsonProperty(value = TurbaseConstants.ID, required = true) final String id,
-      @JsonProperty(value = TurbaseConstants.CONTENT_PROVIDER, required = true) final String contentProvider,
-      @JsonProperty(value = TurbaseConstants.LAST_MODIFIED, required = true) final String lastModified,
-      @JsonProperty(value = TurbaseConstants.CHECKSUM, required = true) final String checksum,
-      @JsonProperty(value = TurbaseConstants.LICENSE, required = true) final String license,
-      @JsonProperty(value = TurbaseConstants.NAMING, required = true) final String naming,
-      @JsonProperty(value = TurbaseConstants.PUBLISH_STATUS, required = true) final String publishStatus,
-      @JsonProperty(value = TurbaseConstants.NAME, required = true) final String name,
-      @JsonProperty(value = TurbaseConstants.DESCRIPTION, required = true) final String description,
-      @JsonProperty(value = TurbaseConstants.TAGS, required = false) final String[] tags
+      @JsonProperty(value = TurbaseConstants.ID, required = true)
+      final String id,
+      @JsonProperty(value = TurbaseConstants.CONTENT_PROVIDER, required = true)
+      final String contentProvider,
+      @JsonProperty(value = TurbaseConstants.LAST_MODIFIED, required = true)
+      final String lastModified,
+      @JsonProperty(value = TurbaseConstants.CHECKSUM, required = true)
+      final String checksum,
+      @JsonProperty(value = TurbaseConstants.LICENSE, required = true)
+      final String license,
+      @JsonProperty(value = TurbaseConstants.NAMING, required = true)
+      final String naming,
+      @JsonProperty(value = TurbaseConstants.PUBLISH_STATUS, required = true)
+      final String publishStatus,
+      @JsonProperty(value = TurbaseConstants.NAME, required = true)
+      final String name,
+      @JsonProperty(value = TurbaseConstants.DESCRIPTION, required = true)
+      final String description,
+      @JsonProperty(value = TurbaseConstants.TAGS, required = false)
+      final String[] tags
   ) {
     this.id = id;
     this.contentProvider = contentProvider;

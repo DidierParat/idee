@@ -1,26 +1,28 @@
 package idee;
 
-import idee.Clients.DntClient;
-import idee.Clients.LocationForecastClient;
+import idee.clients.DntClient;
+import idee.clients.LocationForecastClient;
 import idee.resources.GetIdeasResource;
 import idee.utils.MapOfNorway;
+import org.apache.commons.cli.ParseException;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
+
 import java.util.logging.Logger;
-import org.apache.commons.cli.*;
-import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.servlet.*;
-import org.glassfish.jersey.server.*;
-import org.glassfish.jersey.servlet.*;
 
 public final class Main {
 
   private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws Exception {
     Config config;
     try {
       config = new Config(args);
-    } catch (ParseException e) {
-      LOGGER.severe("Could not parse args." + e);
+    } catch (ParseException exception) {
+      LOGGER.severe("Could not parse args." + exception);
       return;
     }
 
@@ -37,11 +39,7 @@ public final class Main {
     Server server = new Server(config.port);
     ServletContextHandler context = new ServletContextHandler(server, "/*");
     context.addServlet(servlet, "/*");
-    try {
-      server.start();
-    } catch (Exception e) {
-      LOGGER.severe("Could not start server." + e);
-    }
+    server.start();
   }
 
   private Main() {

@@ -1,14 +1,12 @@
 package idee.models;
 
-import idee.models.Nasjonalturbase.Area;
-import org.jdom.JDOMException;
+import idee.models.nasjonalturbase.Area;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class Forecast {
 
@@ -36,8 +34,7 @@ public class Forecast {
   private final Weather weather;
   private final Area area;
 
-  public Forecast(final Area area, final Calendar day, final String jsonForecast)
-      throws JDOMException, IOException {
+  public Forecast(final Area area, final Calendar day, final String jsonForecast) {
     this.area = area;
     this.weather = extractWeatherFromXml(day, jsonForecast);
   }
@@ -64,12 +61,13 @@ public class Forecast {
       if (!element.getString(TO).equals(formattedDate)) {
         continue;
       }
-      final String cloudinessString = element.getJSONObject(LOCATION).getJSONObject(CLOUDINESS).getString(PERCENT);
-      final Float cloudinessFloat = Float.parseFloat(cloudinessString);
-      if (cloudinessFloat < 25.0) {
+      final String cloudinessString
+          = element.getJSONObject(LOCATION).getJSONObject(CLOUDINESS).getString(PERCENT);
+      final float cloudinessFloat = Float.parseFloat(cloudinessString);
+      if (cloudinessFloat < 25.0f) {
         return Weather.Sunny;
       }
-      if (cloudinessFloat < 65.0) {
+      if (cloudinessFloat < 65.0f) {
         return Weather.PartiallyCloudy;
       }
       return Weather.Cloudy;

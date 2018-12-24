@@ -1,4 +1,4 @@
-package idee.Clients;
+package idee.clients;
 
 public class ClientException extends Exception {
 

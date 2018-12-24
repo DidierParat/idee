@@ -1,4 +1,4 @@
-package idee.Clients;
+package idee.clients;
 
 import static org.mockito.Mockito.mock;
 

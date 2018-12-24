@@ -1,11 +1,11 @@
-package idee.models.Nasjonalturbase;
+package idee.models.nasjonalturbase;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import idee.models.Location;
-import idee.models.Nasjonalturbase.BaseObjects.PolygonGeoJSON;
-import idee.models.Nasjonalturbase.BaseObjects.Link;
+import idee.models.nasjonalturbase.baseobjects.Link;
+import idee.models.nasjonalturbase.baseobjects.PolygonGeoJson;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,13 +20,13 @@ public class Area extends BasicData implements Serializable {
   @JsonProperty(TurbaseConstants.LINKS)
   private final List<Link> links;
   @JsonProperty(TurbaseConstants.PARENTS_AREAS)
-  private final String[] parentsAreasID;
+  private final String[] parentsAreasId;
   @JsonProperty(TurbaseConstants.GROUPS)
-  private final String[] groupsID;
+  private final String[] groupsId;
   @JsonProperty(TurbaseConstants.PICTURES)
-  private final String[] picturesID;
+  private final String[] picturesId;
   @JsonProperty(TurbaseConstants.PLACES)
-  private final String[] placesID;
+  private final String[] placesId;
   @JsonProperty(TurbaseConstants.URL)
   private final String url;
   @JsonProperty(TurbaseConstants.MAP)
@@ -34,7 +34,7 @@ public class Area extends BasicData implements Serializable {
   @JsonProperty(TurbaseConstants.HIKE_MAP)
   private final String hikeMap;
   @JsonProperty(TurbaseConstants.GEO_JSON)
-  private PolygonGeoJSON polygonGeoJson;
+  private PolygonGeoJson polygonGeoJson;
   // This value is computed from the GeoJson polygon
   private final Location center;
 
@@ -50,20 +50,20 @@ public class Area extends BasicData implements Serializable {
     return links;
   }
 
-  public String[] getParentsAreasID() {
-    return parentsAreasID;
+  public String[] getParentsAreasId() {
+    return parentsAreasId;
   }
 
-  public String[] getGroupsID() {
-    return groupsID;
+  public String[] getGroupsId() {
+    return groupsId;
   }
 
-  public String[] getPicturesID() {
-    return picturesID;
+  public String[] getPicturesId() {
+    return picturesId;
   }
 
-  public String[] getPlacesID() {
-    return placesID;
+  public String[] getPlacesId() {
+    return placesId;
   }
 
   public String getUrl() {
@@ -78,7 +78,7 @@ public class Area extends BasicData implements Serializable {
     return hikeMap;
   }
 
-  public PolygonGeoJSON getPolygonGeoJson() {
+  public PolygonGeoJson getPolygonGeoJson() {
     return polygonGeoJson;
   }
 
@@ -88,27 +88,48 @@ public class Area extends BasicData implements Serializable {
 
   @JsonCreator
   public Area(
-      @JsonProperty(value = TurbaseConstants.ID, required = true) final String id,
-      @JsonProperty(value = TurbaseConstants.CONTENT_PROVIDER, required = true) final String contentProvider,
-      @JsonProperty(value = TurbaseConstants.LAST_MODIFIED, required = true) final String lastModified,
-      @JsonProperty(value = TurbaseConstants.CHECKSUM, required = true) final String checksum,
-      @JsonProperty(value = TurbaseConstants.LICENSE, required = true) final String license,
-      @JsonProperty(value = TurbaseConstants.NAMING, required = true) final String naming,
-      @JsonProperty(value = TurbaseConstants.PUBLISH_STATUS, required = true) final String publishStatus,
-      @JsonProperty(value = TurbaseConstants.NAME, required = true) final String name,
-      @JsonProperty(value = TurbaseConstants.DESCRIPTION, required = true) final String description,
-      @JsonProperty(value = TurbaseConstants.TAGS, required = false) final String[] tags,
-      @JsonProperty(value = TurbaseConstants.GEO_JSON, required = false) final PolygonGeoJSON polygonGeoJson,
-      @JsonProperty(value = TurbaseConstants.MUNICIPALITIES, required = false) final String[] municipalities,
-      @JsonProperty(value = TurbaseConstants.COUNTIES, required = false) final String[] counties,
-      @JsonProperty(value = TurbaseConstants.LINKS, required = false) final List<Link> links,
-      @JsonProperty(value = TurbaseConstants.PARENTS_AREAS, required = false) final String[] parentsAreasID,
-      @JsonProperty(value = TurbaseConstants.GROUPS, required = false) final String[] groupsID,
-      @JsonProperty(value = TurbaseConstants.PICTURES, required = true) final String[] picturesID,
-      @JsonProperty(value = TurbaseConstants.PLACES, required = false) final String[] placesID,
-      @JsonProperty(value = TurbaseConstants.URL, required = false) final String url,
-      @JsonProperty(value = TurbaseConstants.MAP, required = false) final String map,
-      @JsonProperty(value = TurbaseConstants.HIKE_MAP, required = false) final String hikeMap
+      @JsonProperty(value = TurbaseConstants.ID, required = true)
+      final String id,
+      @JsonProperty(value = TurbaseConstants.CONTENT_PROVIDER, required = true)
+      final String contentProvider,
+      @JsonProperty(value = TurbaseConstants.LAST_MODIFIED, required = true)
+      final String lastModified,
+      @JsonProperty(value = TurbaseConstants.CHECKSUM, required = true)
+      final String checksum,
+      @JsonProperty(value = TurbaseConstants.LICENSE, required = true)
+      final String license,
+      @JsonProperty(value = TurbaseConstants.NAMING, required = true)
+      final String naming,
+      @JsonProperty(value = TurbaseConstants.PUBLISH_STATUS, required = true)
+      final String publishStatus,
+      @JsonProperty(value = TurbaseConstants.NAME, required = true)
+      final String name,
+      @JsonProperty(value = TurbaseConstants.DESCRIPTION, required = true)
+      final String description,
+      @JsonProperty(value = TurbaseConstants.TAGS, required = false)
+      final String[] tags,
+      @JsonProperty(value = TurbaseConstants.GEO_JSON, required = false)
+      final PolygonGeoJson polygonGeoJson,
+      @JsonProperty(value = TurbaseConstants.MUNICIPALITIES, required = false)
+      final String[] municipalities,
+      @JsonProperty(value = TurbaseConstants.COUNTIES, required = false)
+      final String[] counties,
+      @JsonProperty(value = TurbaseConstants.LINKS, required = false)
+      final List<Link> links,
+      @JsonProperty(value = TurbaseConstants.PARENTS_AREAS, required = false)
+      final String[] parentsAreasId,
+      @JsonProperty(value = TurbaseConstants.GROUPS, required = false)
+      final String[] groupsId,
+      @JsonProperty(value = TurbaseConstants.PICTURES, required = true)
+      final String[] picturesId,
+      @JsonProperty(value = TurbaseConstants.PLACES, required = false)
+      final String[] placesId,
+      @JsonProperty(value = TurbaseConstants.URL, required = false)
+      final String url,
+      @JsonProperty(value = TurbaseConstants.MAP, required = false)
+      final String map,
+      @JsonProperty(value = TurbaseConstants.HIKE_MAP, required = false)
+      final String hikeMap
   ) {
     super(id,
         contentProvider,
@@ -124,10 +145,10 @@ public class Area extends BasicData implements Serializable {
     this.municipalities = municipalities;
     this.counties = counties;
     this.links = links;
-    this.parentsAreasID = parentsAreasID;
-    this.groupsID = groupsID;
-    this.picturesID = picturesID;
-    this.placesID = placesID;
+    this.parentsAreasId = parentsAreasId;
+    this.groupsId = groupsId;
+    this.picturesId = picturesId;
+    this.placesId = placesId;
     this.url = url;
     this.map = map;
     this.hikeMap = hikeMap;
@@ -140,7 +161,7 @@ public class Area extends BasicData implements Serializable {
   }
 
   private Location computeCenterOfPolygon() {
-    final PolygonGeoJSON areaPolygon = this.getPolygonGeoJson();
+    final PolygonGeoJson areaPolygon = this.getPolygonGeoJson();
     Double[][] polygonCoordinates = areaPolygon.getCoordinates()[0];
     Double lowestLongitude = Double.MAX_VALUE;
     Double highestLongitude = Double.MIN_VALUE;

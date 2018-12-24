@@ -1,9 +1,9 @@
-package idee.models.Nasjonalturbase;
+package idee.models.nasjonalturbase;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import idee.models.Nasjonalturbase.BaseObjects.GenericObject;
+import idee.models.nasjonalturbase.baseobjects.GenericObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ListOfGenericObjects {
@@ -29,9 +29,12 @@ public class ListOfGenericObjects {
 
   @JsonCreator
   public ListOfGenericObjects(
-      @JsonProperty(value = TurbaseConstants.DOCUMENTS, required = true) final GenericObject[] documents,
-      @JsonProperty(value = TurbaseConstants.COUNT, required = true) final Integer count,
-      @JsonProperty(value = TurbaseConstants.TOTAL, required = true) final Integer total) {
+      @JsonProperty(value = TurbaseConstants.DOCUMENTS, required = true)
+      final GenericObject[] documents,
+      @JsonProperty(value = TurbaseConstants.COUNT, required = true)
+      final Integer count,
+      @JsonProperty(value = TurbaseConstants.TOTAL, required = true)
+      final Integer total) {
     this.documents = documents;
     this.count = count;
     this.total = total;

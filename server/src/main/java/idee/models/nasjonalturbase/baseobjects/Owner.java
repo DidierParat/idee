@@ -1,12 +1,12 @@
-package idee.models.Nasjonalturbase.BaseObjects;
+package idee.models.nasjonalturbase.baseobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import idee.models.Nasjonalturbase.TurbaseConstants;
+import idee.models.nasjonalturbase.TurbaseConstants;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Photographer {
+public class Owner {
 
   @JsonProperty(TurbaseConstants.NAME)
   private final String name;
@@ -14,6 +14,8 @@ public class Photographer {
   private final String phone;
   @JsonProperty(TurbaseConstants.EMAIL)
   private final String email;
+  @JsonProperty(TurbaseConstants.URL)
+  private final String url;
 
   public String getName() {
     return name;
@@ -28,13 +30,15 @@ public class Photographer {
   }
 
   @JsonCreator
-  public Photographer(
+  public Owner(
       @JsonProperty(value = TurbaseConstants.NAME, required = true) final String name,
       @JsonProperty(value = TurbaseConstants.PHONE, required = true) final String phone,
-      @JsonProperty(value = TurbaseConstants.EMAIL, required = true) final String email
+      @JsonProperty(value = TurbaseConstants.EMAIL, required = true) final String email,
+      @JsonProperty(value = TurbaseConstants.URL, required = true) final String url
   ) {
     this.name = name;
     this.phone = phone;
     this.email = email;
+    this.url = url;
   }
 }

@@ -1,8 +1,8 @@
-package idee.models.Nasjonalturbase.BaseObjects;
+package idee.models.nasjonalturbase.baseobjects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import idee.models.Nasjonalturbase.TurbaseConstants;
+import idee.models.nasjonalturbase.TurbaseConstants;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TimeSpent {

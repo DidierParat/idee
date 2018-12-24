@@ -1,13 +1,13 @@
-package idee.models.Nasjonalturbase.BaseObjects;
+package idee.models.nasjonalturbase.baseobjects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import idee.models.Nasjonalturbase.TurbaseConstants;
+import idee.models.nasjonalturbase.TurbaseConstants;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LineStringGeoJSON implements Serializable {
+public class LineStringGeoJson implements Serializable {
 
   @JsonProperty(TurbaseConstants.COORDINATES)
   private final Double[][] coordinates;
@@ -18,9 +18,11 @@ public class LineStringGeoJSON implements Serializable {
     return coordinates;
   }
 
-  public LineStringGeoJSON(
-      @JsonProperty(value = TurbaseConstants.COORDINATES, required = true) final Double[][] coordinates,
-      @JsonProperty(value = TurbaseConstants.TYPE, required = true) final String type
+  public LineStringGeoJson(
+      @JsonProperty(value = TurbaseConstants.COORDINATES, required = true)
+      final Double[][] coordinates,
+      @JsonProperty(value = TurbaseConstants.TYPE, required = true)
+      final String type
   ) {
     this.coordinates = coordinates;
     this.type = type;
