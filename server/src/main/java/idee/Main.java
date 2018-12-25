@@ -1,9 +1,10 @@
 package idee;
 
-import idee.clients.DntClient;
-import idee.clients.LocationForecastClient;
-import idee.resources.GetIdeasResource;
-import idee.utils.MapOfNorway;
+import idee.client.DntClient;
+import idee.client.LocationForecastClient;
+import idee.resource.GetIdeasResource;
+import idee.util.MapOfNorway;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -11,23 +12,19 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import java.util.logging.Logger;
-
+@Slf4j
 public final class Main {
-
-  private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
   public static void main(final String[] args) throws Exception {
     Config config;
     try {
       config = new Config(args);
     } catch (ParseException exception) {
-      LOGGER.severe("Could not parse args." + exception);
+      log.info("Could not parse args. Exception caught: ", exception);
       return;
     }
 
-    final LocationForecastClient locationForecastClient
-        = new LocationForecastClient();
+    final LocationForecastClient locationForecastClient = new LocationForecastClient();
     final DntClient dntClient = new DntClient(config.dntHost, config.dntApiKey);
     final MapOfNorway mapOfNorway = new MapOfNorway(dntClient);
 
