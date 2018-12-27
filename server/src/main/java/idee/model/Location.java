@@ -1,7 +1,10 @@
 package idee.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class Location implements Serializable {
 
   private final Double longitude;
@@ -9,18 +12,5 @@ public class Location implements Serializable {
 
   public String toString() {
     return "Longitude: " + longitude + ". Latitude: " + latitude;
-  }
-
-  public Double getLongitude() {
-    return longitude;
-  }
-
-  public Double getLatitude() {
-    return latitude;
-  }
-
-  public Location(final Double longitude, final Double latitude) {
-    this.longitude = longitude;
-    this.latitude = latitude;
   }
 }
