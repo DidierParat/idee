@@ -6,10 +6,12 @@ How to use:
 
 TODOs:
 - write unit tests
-- return JSON error responses
-- enforce maven checkstyle
-- add mutation tests
 - add cache
-- add Trace ID to requests
-- check duplicated trips
+- handle exceptions
+- return error responses
 - update readme
+
+- add Trace ID to request
+- add mutation tests
+- enforce maven checkstyle
+- check duplicated trips
