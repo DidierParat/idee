@@ -4,7 +4,7 @@ import com.github.didierparat.idee.provider.forecast.model.nested.ProviderWeathe
 import lombok.Data;
 
 @Data
-public class ProviderWeather {
+public class ProviderForecast {
 
   private final ProviderWeatherMain main;
 }

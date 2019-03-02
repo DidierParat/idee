@@ -13,11 +13,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.didierparat.idee.TestUtil;
+import com.github.didierparat.idee.model.Forecast;
 import com.github.didierparat.idee.model.Idea;
 import com.github.didierparat.idee.model.Trip;
-import com.github.didierparat.idee.model.Weather;
 import com.github.didierparat.idee.service.TripService;
-import com.github.didierparat.idee.service.WeatherService;
+import com.github.didierparat.idee.service.ForecastService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class IdeasControllerTest {
   private TripService tripService;
 
   @MockBean
-  private WeatherService weatherService;
+  private ForecastService forecastService;
 
   private ObjectMapper objectMapper;
 
@@ -72,18 +72,18 @@ public class IdeasControllerTest {
             eq(VALID_LATITUDE),
             eq(VALID_SEARCH_RADIUS)))
         .thenReturn(trips);
-    Weather weatherSunny = TestUtil.readValue(TestUtil.RESOURCE_WEATHER_SUNNY, Weather.class);
-    when(weatherService.getWeather(
+    Forecast forecastSunny = TestUtil.readValue(TestUtil.RESOURCE_FORECAST_SUNNY, Forecast.class);
+    when(forecastService.getWeather(
         eq(trips.get(0).getLocation().getLongitude().toString()),
         eq(trips.get(0).getLocation().getLatitude().toString()),
         any(Calendar.class)))
-        .thenReturn(weatherSunny);
-    Weather weatherRainy = TestUtil.readValue(TestUtil.RESOURCE_WEATHER_RAINY, Weather.class);
-    when(weatherService.getWeather(
+        .thenReturn(forecastSunny);
+    Forecast forecastRainy = TestUtil.readValue(TestUtil.RESOURCE_FORECAST_RAINY, Forecast.class);
+    when(forecastService.getWeather(
         eq(trips.get(1).getLocation().getLongitude().toString()),
         eq(trips.get(1).getLocation().getLatitude().toString()),
         any(Calendar.class)))
-        .thenReturn(weatherRainy);
+        .thenReturn(forecastRainy);
 
     MvcResult result = mockMvc
         .perform(
@@ -104,7 +104,7 @@ public class IdeasControllerTest {
             eq(VALID_LONGITUDE),
             eq(VALID_LATITUDE),
             eq(VALID_SEARCH_RADIUS));
-    verify(weatherService, times(2))
+    verify(forecastService, times(2))
         .getWeather(anyString(), anyString(), any(Calendar.class));
   }
 

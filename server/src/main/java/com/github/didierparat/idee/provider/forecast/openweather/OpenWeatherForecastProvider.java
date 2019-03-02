@@ -8,7 +8,7 @@ import com.github.didierparat.idee.provider.client.ClientException;
 import com.github.didierparat.idee.provider.forecast.ForecastProvider;
 import com.github.didierparat.idee.provider.forecast.openweather.model.OpenWeatherDayForecast;
 import com.github.didierparat.idee.provider.forecast.openweather.model.nested.OpenWeatherWeather;
-import com.github.didierparat.idee.provider.forecast.model.ProviderWeather;
+import com.github.didierparat.idee.provider.forecast.model.ProviderForecast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.Date;
 @Service
 public class OpenWeatherForecastProvider implements ForecastProvider {
 
-  // Open Weather constants
+  // Open Forecast constants
   private static final String DAILY_FORECAST_PATH = "forecast/daily";
   private static final String QUERY_PARAM_LONGITUDE = "lon";
   private static final String QUERY_PARAM_LATITUDE = "lat";
@@ -46,7 +46,7 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
     this.adaptiveClient = adaptiveClient;
   }
 
-  public ProviderWeather getWeather(
+  public ProviderForecast getWeather(
       final String longitude, final String latitude, final Calendar day) {
     final OpenWeatherDayForecast openWeatherDayForecast = fetchWeather(longitude, latitude);
     return convertToForecast(openWeatherDayForecast, day);
@@ -70,14 +70,14 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
     }
   }
 
-  private ProviderWeather convertToForecast(
+  private ProviderForecast convertToForecast(
       final OpenWeatherDayForecast openWeatherDayForecast, final Calendar day) {
     for (final OpenWeatherForecast openWeatherForecast : openWeatherDayForecast.getList()) {
       if (sameDay(openWeatherForecast.getDt(), day)) {
         return getOpenWeatherWeatherFromProviderWeather(openWeatherForecast.getWeather());
       }
     }
-    return new ProviderWeather(ProviderWeatherMain.UNKNOWN);
+    return new ProviderForecast(ProviderWeatherMain.UNKNOWN);
   }
 
   private boolean sameDay(final long epoch, final Calendar targetDay) {
@@ -89,15 +89,15 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
   }
 
   // TODO complete
-  private ProviderWeather getOpenWeatherWeatherFromProviderWeather(
+  private ProviderForecast getOpenWeatherWeatherFromProviderWeather(
       final OpenWeatherWeather weather) {
     switch (weather.getMain()) {
       case "Clear":
-        return new ProviderWeather(ProviderWeatherMain.SUNNY);
+        return new ProviderForecast(ProviderWeatherMain.SUNNY);
       case "Rain":
-        return new ProviderWeather(ProviderWeatherMain.RAINY);
+        return new ProviderForecast(ProviderWeatherMain.RAINY);
       default:
-        return new ProviderWeather(ProviderWeatherMain.UNKNOWN);
+        return new ProviderForecast(ProviderWeatherMain.UNKNOWN);
     }
   }
 }

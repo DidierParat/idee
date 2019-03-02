@@ -1,10 +1,10 @@
 package com.github.didierparat.idee.model.nested;
 
-import lombok.Data;
+import lombok.Value;
 
 import java.io.Serializable;
 
-@Data
+@Value
 public class Location implements Serializable {
 
   private final Float longitude;

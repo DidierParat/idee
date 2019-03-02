@@ -9,8 +9,10 @@ import java.io.InputStream;
 public class TestUtil {
 
   public static final String RESOURCE_TRIPS = "trips.json";
-  public static final String RESOURCE_WEATHER_SUNNY = "weather_sunny.json";
-  public static final String RESOURCE_WEATHER_RAINY = "weather_rainy.json";
+  public static final String RESOURCE_FORECAST_SUNNY = "forecast_sunny.json";
+  public static final String RESOURCE_FORECAST_RAINY = "forecast_rainy.json";
+  public static final String RESOURCE_PROVIDER_TRIPS = "provider/trips.json";
+  public static final String RESOURCE_PROVIDER_FORECAST = "provider/forecast.json";
 
   /**
    * Read value from a resource file.

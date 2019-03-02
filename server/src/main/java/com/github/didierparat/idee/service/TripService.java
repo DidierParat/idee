@@ -1,6 +1,7 @@
 package com.github.didierparat.idee.service;
 
 import com.github.didierparat.idee.model.Trip;
+import com.github.didierparat.idee.model.nested.Location;
 import com.github.didierparat.idee.provider.trip.TripProvider;
 import com.github.didierparat.idee.provider.trip.model.ProviderTrip;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,11 @@ public class TripService {
   }
 
   private static Trip providerTripToTrip(final ProviderTrip providerTrip) {
-    final Trip trip = null;
-    // TODO
-    return trip;
+    return new Trip(
+        providerTrip.getName(),
+        providerTrip.getUrl(),
+        providerTrip.getEstimatedTime(),
+        new Location(0.0f, 0.0f) // TODO
+    );
   }
 }

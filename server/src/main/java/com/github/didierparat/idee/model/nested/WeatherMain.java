@@ -1,5 +1,7 @@
 package com.github.didierparat.idee.model.nested;
 
+import lombok.Value;
+
 public enum WeatherMain {
 
   SUNNY,

@@ -1,9 +1,9 @@
 package com.github.didierparat.idee.model;
 
 import com.github.didierparat.idee.model.nested.WeatherMain;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-public class Weather {
+@Value
+public class Forecast {
   private final WeatherMain main;
 }

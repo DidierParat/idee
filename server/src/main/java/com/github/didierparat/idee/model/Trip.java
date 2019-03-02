@@ -1,9 +1,9 @@
 package com.github.didierparat.idee.model;
 
 import com.github.didierparat.idee.model.nested.Location;
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class Trip {
 
   private final String name;

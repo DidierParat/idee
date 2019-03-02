@@ -2,12 +2,12 @@ package com.github.didierparat.idee.controller;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import com.github.didierparat.idee.model.Forecast;
 import com.github.didierparat.idee.model.Idea;
 import com.github.didierparat.idee.model.Trip;
-import com.github.didierparat.idee.model.Weather;
 import com.github.didierparat.idee.model.nested.WeatherMain;
 import com.github.didierparat.idee.service.TripService;
-import com.github.didierparat.idee.service.WeatherService;
+import com.github.didierparat.idee.service.ForecastService;
 import com.github.didierparat.idee.util.CalendarUtil;
 import com.github.didierparat.idee.validator.IdeaInputValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -37,14 +36,14 @@ public class IdeasController {
   @VisibleForTesting
   static final String QUERY_PARAM_SEARCH_RADIUS = "searchRadius";
 
-  private final WeatherService weatherService;
+  private final ForecastService forecastService;
   private final TripService tripService;
 
   @Autowired
   public IdeasController(
-      final WeatherService weatherService,
+      final ForecastService forecastService,
       final TripService tripService) {
-    this.weatherService = weatherService;
+    this.forecastService = forecastService;
     this.tripService = tripService;
   }
 
@@ -55,7 +54,7 @@ public class IdeasController {
       @RequestParam(QUERY_PARAM_SEARCH_RADIUS) final String searchRadius) {
     IdeaInputValidator.validate(userLocationLongitude, userLocationLatitude, searchRadius);
 
-    final Weather userWeatherPreference = new Weather(WeatherMain.SUNNY);
+    final Forecast userForecastPreference = new Forecast(WeatherMain.SUNNY);
     final Calendar saturday = CalendarUtil.getNextSaturday();
 
     final List<Trip> trips = tripService.getTripsInArea(
@@ -65,12 +64,12 @@ public class IdeasController {
     for(final Trip trip : trips) {
       final String tripLongitude = trip.getLocation().getLongitude().toString();
       final String tripLatitude = trip.getLocation().getLatitude().toString();
-      final Weather weather = weatherService.getWeather(tripLongitude, tripLatitude, saturday);
-      ideas.add(new Idea(weather, trip));
+      final Forecast forecast = forecastService.getWeather(tripLongitude, tripLatitude, saturday);
+      ideas.add(new Idea(forecast, trip));
     }
 
     ideas.removeIf(
-        idea -> idea.getWeather().getMain().compareTo(userWeatherPreference.getMain()) > 0);
+        idea -> idea.getForecast().getMain().compareTo(userForecastPreference.getMain()) > 0);
 
     log.info("I found {} Ideas!", ideas.size());
     ideas.forEach(idea -> log.debug(idea.toString()));
