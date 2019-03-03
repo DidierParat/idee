@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Trip1",
+    "description": "This is the trip1.",
+    "distance": 1,
+    "direction": "There.",
+    "municipalities": [
+      "Municipality1"
+    ],
+    "counties": [
+      "County1"
+    ],
+    "access": "car",
+    "grading": "easy",
+    "suitableFor": [
+      "children"
+    ],
+    "handicap": [],
+    "seasons": [
+      "summer"
+    ],
+    "estimatedTime": "1h",
+    "url": "http://trip-provider.com/trips/trip1"
+  },
+  {
+    "name": "Trip2",
+    "description": "This is the trip2.",
+    "distance": 50,
+    "direction": "There.",
+    "municipalities": [
+      "Municipality2"
+    ],
+    "counties": [
+      "County2"
+    ],
+    "access": "car",
+    "grading": "hard",
+    "suitableFor": [],
+    "handicap": [],
+    "seasons": [
+      "winter"
+    ],
+    "estimatedTime": "5h",
+    "url": "http://trip-provider.com/trips/trip2"
+  }
+]

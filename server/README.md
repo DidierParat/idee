@@ -1,11 +1,21 @@
 # idee
 An app that gives ideas about trips for the next weekend.
 
-How to use:
-`curl -X POST --data "userLon=10.729174" --data "userLat=59.916649" --data "searchRadius=20" http://localhost:8080/get-ideas`
+## TODOs
+### Fun features:
+- add cache
+- add pictures to responses
+- add weather details: morning, afternoon, evening
+  for each, give: main, wind, temperature
+- add estimated travel time with car, bus, train
+- add estimated cost to get to the hike (toll + gas)
+- update readme
 
-TODOs:
-- refactor code with proper layering
+### Code Quality/Robustness
 - write unit tests
-- return JSON error responses
+- handle exceptions
+- return error responses
+- add Trace ID to request for logs
+- add mutation tests
 - enforce maven checkstyle
+- check duplicated trips

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "trip1",
+    "url": "http://trip-provider/trips/trip1",
+    "estimatedTime": "1h",
+    "location": {
+      "longitude": 1.0,
+      "latitude": 1.0
+    }
+  },
+  {
+    "name": "trip2",
+    "url": "http://trip-provider/trips/trip2",
+    "estimatedTime": "2h",
+    "location": {
+      "longitude": 2.0,
+      "latitude": 2.0
+    }
+  }
+]
