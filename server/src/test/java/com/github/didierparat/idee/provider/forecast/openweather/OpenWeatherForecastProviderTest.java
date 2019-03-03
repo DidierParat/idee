@@ -17,14 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.net.URI;
-import java.util.Calendar;
+import java.util.Date;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpenWeatherForecastProviderTest {
 
   private static final String LONGITUDE = "1.0";
   private static final String LATITUDE = "1.0";
-  private static final String COUNT = "7";
   private static final String HOST = "https://api.openweathermap.org/data/2.5";
   private static final String API_KEY = "123";
 
@@ -39,29 +38,44 @@ public class OpenWeatherForecastProviderTest {
   }
 
   @Test
-  public void getWeather_ReturnsWeather() throws Exception {
+  public void getWeather_WithClear_ReturnsSunnyWeather() throws Exception {
     URI uri = createUri();
     OpenWeatherDayForecast openWeatherDayForecast = TestUtil.readValue(
         TestUtil.RESOURCE_OPENWEATHER_PROVIDER_DAY_FORECAST, OpenWeatherDayForecast.class);
-    Calendar day = Calendar.getInstance();
-    day.setTimeInMillis(openWeatherDayForecast.getList().get(4).getDt());
+    Date date = new Date();
+    date.setTime(openWeatherDayForecast.getList().get(3).getDt()*1000);
     when(adaptiveClient.getData(eq(uri), eq(OpenWeatherDayForecast.class)))
         .thenReturn(openWeatherDayForecast);
     ProviderForecast providerForecast = openWeatherForecastProvider.getWeather(
-        LONGITUDE, LATITUDE, day);
+        LONGITUDE, LATITUDE, date);
 
     assertNotNull(providerForecast);
     assertEquals(ProviderWeatherMain.SUNNY, providerForecast.getMain());
   }
 
+  @Test
+  public void getWeather_WithRain_ReturnsRainyWeather() throws Exception {
+    URI uri = createUri();
+    OpenWeatherDayForecast openWeatherDayForecast = TestUtil.readValue(
+        TestUtil.RESOURCE_OPENWEATHER_PROVIDER_DAY_FORECAST, OpenWeatherDayForecast.class);
+    Date date = new Date();
+    date.setTime(openWeatherDayForecast.getList().get(4).getDt()*1000);
+    when(adaptiveClient.getData(eq(uri), eq(OpenWeatherDayForecast.class)))
+        .thenReturn(openWeatherDayForecast);
+    ProviderForecast providerForecast = openWeatherForecastProvider.getWeather(
+        LONGITUDE, LATITUDE, date);
+
+    assertNotNull(providerForecast);
+    assertEquals(ProviderWeatherMain.RAINY, providerForecast.getMain());
+  }
+
   private URI createUri() throws Exception {
      return new URI(
          String.format(
-             "%s/forecast/daily?lon=%s&lat=%s&cnt=%s&appid=%s",
+             "%s/forecast?lon=%s&lat=%s&appid=%s",
              HOST,
              LONGITUDE,
              LATITUDE,
-             COUNT,
              API_KEY));
 
   }

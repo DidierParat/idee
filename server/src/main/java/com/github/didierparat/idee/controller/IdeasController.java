@@ -6,9 +6,8 @@ import com.github.didierparat.idee.model.Forecast;
 import com.github.didierparat.idee.model.Idea;
 import com.github.didierparat.idee.model.Trip;
 import com.github.didierparat.idee.model.nested.WeatherMain;
-import com.github.didierparat.idee.service.TripService;
 import com.github.didierparat.idee.service.ForecastService;
-import com.github.didierparat.idee.util.CalendarUtil;
+import com.github.didierparat.idee.service.TripService;
 import com.github.didierparat.idee.validator.IdeaInputValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +36,8 @@ public class IdeasController {
   static final String QUERY_PARAM_USER_LATITUDE = "lat";
   @VisibleForTesting
   static final String QUERY_PARAM_SEARCH_RADIUS = "searchRadius";
+  @VisibleForTesting
+  static final String QUERY_PARAM_DATE = "date";
 
   private final ForecastService forecastService;
   private final TripService tripService;
@@ -51,11 +54,13 @@ public class IdeasController {
   public List<Idea> getIdeas(
       @RequestParam(QUERY_PARAM_USER_LONGITUDE) final String userLocationLongitude,
       @RequestParam(QUERY_PARAM_USER_LATITUDE) final String userLocationLatitude,
-      @RequestParam(QUERY_PARAM_SEARCH_RADIUS) final String searchRadius) {
-    IdeaInputValidator.validate(userLocationLongitude, userLocationLatitude, searchRadius);
+      @RequestParam(QUERY_PARAM_SEARCH_RADIUS) final String searchRadius,
+      @RequestParam(QUERY_PARAM_DATE) final String dateAsString) throws ParseException {
+    IdeaInputValidator.validate(
+        userLocationLongitude, userLocationLatitude, searchRadius, dateAsString);
 
-    final Forecast userForecastPreference = new Forecast(WeatherMain.SUNNY);
-    final Calendar saturday = CalendarUtil.getNextSaturday();
+    final Forecast userForecastPreference = new Forecast(WeatherMain.RAINY);
+    final Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateAsString);
 
     final List<Trip> trips = tripService.getTripsInArea(
         userLocationLongitude, userLocationLatitude, searchRadius);
@@ -64,7 +69,7 @@ public class IdeasController {
     for(final Trip trip : trips) {
       final String tripLongitude = trip.getLocation().getLongitude().toString();
       final String tripLatitude = trip.getLocation().getLatitude().toString();
-      final Forecast forecast = forecastService.getWeather(tripLongitude, tripLatitude, saturday);
+      final Forecast forecast = forecastService.getWeather(tripLongitude, tripLatitude, date);
       ideas.add(new Idea(forecast, trip));
     }
 

@@ -2,12 +2,12 @@ package com.github.didierparat.idee.service;
 
 import com.github.didierparat.idee.model.Forecast;
 import com.github.didierparat.idee.model.nested.WeatherMain;
-import com.github.didierparat.idee.provider.forecast.model.ProviderForecast;
 import com.github.didierparat.idee.provider.forecast.ForecastProvider;
+import com.github.didierparat.idee.provider.forecast.model.ProviderForecast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
+import java.util.Date;
 
 @Service
 public class ForecastService {
@@ -19,7 +19,7 @@ public class ForecastService {
     this.forecastProvider = forecastProvider;
   }
 
-  public Forecast getWeather(final String longitude, final String latitude, final Calendar date) {
+  public Forecast getWeather(final String longitude, final String latitude, final Date date) {
     return providerWeatherToWeather(
         forecastProvider.getWeather(longitude, latitude, date));
   }

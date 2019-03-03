@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -76,13 +77,13 @@ public class IdeasControllerTest {
     when(forecastService.getWeather(
         eq(trips.get(0).getLocation().getLongitude().toString()),
         eq(trips.get(0).getLocation().getLatitude().toString()),
-        any(Calendar.class)))
+        any(Date.class)))
         .thenReturn(forecastSunny);
     Forecast forecastRainy = TestUtil.readValue(TestUtil.RESOURCE_FORECAST_RAINY, Forecast.class);
     when(forecastService.getWeather(
         eq(trips.get(1).getLocation().getLongitude().toString()),
         eq(trips.get(1).getLocation().getLatitude().toString()),
-        any(Calendar.class)))
+        any(Date.class)))
         .thenReturn(forecastRainy);
 
     MvcResult result = mockMvc
@@ -105,7 +106,7 @@ public class IdeasControllerTest {
             eq(VALID_LATITUDE),
             eq(VALID_SEARCH_RADIUS));
     verify(forecastService, times(2))
-        .getWeather(anyString(), anyString(), any(Calendar.class));
+        .getWeather(anyString(), anyString(), any(Date.class));
   }
 
   @Test

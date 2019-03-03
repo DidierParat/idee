@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Calendar;
+import java.util.Date;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ForecastServiceTest {
@@ -37,10 +37,10 @@ public class ForecastServiceTest {
   public void getWeather_ReturnWeather() throws Exception {
     ProviderForecast providerForecast = TestUtil.readValue(
         TestUtil.RESOURCE_PROVIDER_FORECAST, ProviderForecast.class);
-    when(forecastProvider.getWeather(eq(LONGITUDE), eq(LATITUDE), any(Calendar.class)))
+    when(forecastProvider.getWeather(eq(LONGITUDE), eq(LATITUDE), any(Date.class)))
         .thenReturn(providerForecast);
 
-    Forecast forecast = forecastService.getWeather(LONGITUDE, LATITUDE, Calendar.getInstance());
+    Forecast forecast = forecastService.getWeather(LONGITUDE, LATITUDE, new Date());
 
     assertNotNull(forecast);
     assertEquals(providerForecast.getMain().name(), forecast.getMain().name());

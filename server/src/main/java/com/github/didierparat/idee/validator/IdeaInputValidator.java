@@ -4,7 +4,8 @@ public final class IdeaInputValidator {
 
   private IdeaInputValidator() {}
 
-  public static void validate(String longitude, String latitude, String radius) {
+  public static void validate(
+      final String longitude, final String latitude, final String radius, final String date) {
     // TODO
   }
 }

@@ -24,13 +24,11 @@ import java.util.Date;
 public class OpenWeatherForecastProvider implements ForecastProvider {
 
   // Open Forecast constants
-  private static final String DAILY_FORECAST_PATH = "/forecast/daily";
+  private static final String DAILY_FORECAST_PATH = "/forecast";
   private static final String QUERY_PARAM_LONGITUDE = "lon";
   private static final String QUERY_PARAM_LATITUDE = "lat";
   private static final String QUERY_PARAM_COUNT = "cnt";
   private static final String QUERY_PARAM_APP_ID = "appid";
-
-  private static final int NUMBER_OF_DAYS_TO_FETCH = 7;
 
   private final String host;
   private final String apiKey;
@@ -47,9 +45,9 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
   }
 
   public ProviderForecast getWeather(
-      final String longitude, final String latitude, final Calendar day) {
+      final String longitude, final String latitude, final Date date) {
     final OpenWeatherDayForecast openWeatherDayForecast = fetchWeather(longitude, latitude);
-    return convertToForecast(openWeatherDayForecast, day);
+    return convertToForecast(openWeatherDayForecast, date);
   }
 
   private OpenWeatherDayForecast fetchWeather(final String lon, final String lat) {
@@ -59,7 +57,6 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
         .path(DAILY_FORECAST_PATH)
         .queryParam(QUERY_PARAM_LONGITUDE, lon)
         .queryParam(QUERY_PARAM_LATITUDE, lat)
-        .queryParam(QUERY_PARAM_COUNT, NUMBER_OF_DAYS_TO_FETCH)
         .queryParam(QUERY_PARAM_APP_ID, apiKey)
         .build()
         .toUri();
@@ -76,20 +73,20 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
   }
 
   private ProviderForecast convertToForecast(
-      final OpenWeatherDayForecast openWeatherDayForecast, final Calendar day) {
+      final OpenWeatherDayForecast openWeatherDayForecast, final Date date) {
     for (final OpenWeatherForecast openWeatherForecast : openWeatherDayForecast.getList()) {
-      if (sameDay(openWeatherForecast.getDt(), day)) {
+      if (sameDay(openWeatherForecast.getDt()*1000, date)) {
         return getOpenWeatherWeatherFromProviderWeather(openWeatherForecast.getWeather().get(0));
       }
     }
     return new ProviderForecast(ProviderWeatherMain.UNKNOWN);
   }
 
-  private boolean sameDay(final long epoch, final Calendar targetDay) {
-    final Date dateFromEpoch = new Date(epoch);
+  private boolean sameDay(final long timeInMs, final Date date) {
+    final Date dateFromEpoch = new Date(timeInMs);
     DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     String formattedDateFromEpoch = format.format(dateFromEpoch);
-    String formattedTargetDay = format.format(targetDay.getTime());
+    String formattedTargetDay = format.format(date.getTime());
     return formattedTargetDay.equals(formattedDateFromEpoch);
   }
 
@@ -99,6 +96,8 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
     switch (weather.getMain()) {
       case "Clear":
         return new ProviderForecast(ProviderWeatherMain.SUNNY);
+      case "Clouds":
+        return new ProviderForecast(ProviderWeatherMain.CLOUDY);
       case "Rain":
         return new ProviderForecast(ProviderWeatherMain.RAINY);
       default:
