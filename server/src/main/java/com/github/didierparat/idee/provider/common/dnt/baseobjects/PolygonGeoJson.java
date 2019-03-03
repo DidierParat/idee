@@ -10,17 +10,17 @@ import java.io.Serializable;
 public class PolygonGeoJson implements Serializable {
 
   @JsonProperty(DntConstants.COORDINATES)
-  private final Float[][][] coordinates;
+  private final Double[][][] coordinates;
   @JsonProperty(DntConstants.TYPE)
   private final String type;
 
-  public Float[][][] getCoordinates() {
+  public Double[][][] getCoordinates() {
     return coordinates;
   }
 
   public PolygonGeoJson(
       @JsonProperty(value = DntConstants.COORDINATES)
-      final Float[][][] coordinates,
+      final Double[][][] coordinates,
       @JsonProperty(value = DntConstants.TYPE)
       final String type
   ) {

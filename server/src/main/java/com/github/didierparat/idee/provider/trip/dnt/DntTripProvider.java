@@ -51,7 +51,7 @@ public class DntTripProvider implements TripProvider {
   @Override
   public List<ProviderTrip> getTripsInArea(
       final String longitude, final String latitude, final String searchRadiusKm) {
-    List<Area> areas = dntLocationProvider.getAreas();
+    List<Area> areas = dntLocationProvider.getAreasInRange(longitude, latitude, searchRadiusKm);
     if (areas.isEmpty()) {
       log.debug("No areas retrieved from DNT.");
       return Collections.emptyList();

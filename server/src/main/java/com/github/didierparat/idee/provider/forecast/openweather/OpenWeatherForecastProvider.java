@@ -24,11 +24,11 @@ import java.util.Date;
 public class OpenWeatherForecastProvider implements ForecastProvider {
 
   // Open Forecast constants
-  private static final String DAILY_FORECAST_PATH = "forecast/daily";
+  private static final String DAILY_FORECAST_PATH = "/forecast/daily";
   private static final String QUERY_PARAM_LONGITUDE = "lon";
   private static final String QUERY_PARAM_LATITUDE = "lat";
   private static final String QUERY_PARAM_COUNT = "cnt";
-  private static final String QUERY_PARAM_APP_ID = "lon";
+  private static final String QUERY_PARAM_APP_ID = "appid";
 
   private static final int NUMBER_OF_DAYS_TO_FETCH = 7;
 
@@ -63,18 +63,23 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
         .queryParam(QUERY_PARAM_APP_ID, apiKey)
         .build()
         .toUri();
+    OpenWeatherDayForecast openWeatherDayForecast;
     try {
-      return adaptiveClient.getData(requestUrl, OpenWeatherDayForecast.class);
+      openWeatherDayForecast = adaptiveClient.getData(requestUrl, OpenWeatherDayForecast.class);
     } catch (ClientException exception) {
       throw new ProviderException("Exception thrown while getting forecast.", exception);
     }
+    if (openWeatherDayForecast == null) {
+      throw new ProviderException("Got null value from Open Weather.");
+    }
+    return openWeatherDayForecast;
   }
 
   private ProviderForecast convertToForecast(
       final OpenWeatherDayForecast openWeatherDayForecast, final Calendar day) {
     for (final OpenWeatherForecast openWeatherForecast : openWeatherDayForecast.getList()) {
       if (sameDay(openWeatherForecast.getDt(), day)) {
-        return getOpenWeatherWeatherFromProviderWeather(openWeatherForecast.getWeather());
+        return getOpenWeatherWeatherFromProviderWeather(openWeatherForecast.getWeather().get(0));
       }
     }
     return new ProviderForecast(ProviderWeatherMain.UNKNOWN);
@@ -84,7 +89,7 @@ public class OpenWeatherForecastProvider implements ForecastProvider {
     final Date dateFromEpoch = new Date(epoch);
     DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
     String formattedDateFromEpoch = format.format(dateFromEpoch);
-    String formattedTargetDay = format.format(targetDay);
+    String formattedTargetDay = format.format(targetDay.getTime());
     return formattedTargetDay.equals(formattedDateFromEpoch);
   }
 

@@ -13,6 +13,11 @@ public class TestUtil {
   public static final String RESOURCE_FORECAST_RAINY = "forecast_rainy.json";
   public static final String RESOURCE_PROVIDER_TRIPS = "provider/trips.json";
   public static final String RESOURCE_PROVIDER_FORECAST = "provider/forecast.json";
+  public static final String RESOURCE_OPENWEATHER_PROVIDER_DAY_FORECAST
+      = "provider/openweather/day_forecast.json";
+  public static final String RESOURCE_DNT_PROVIDER_AREAS = "provider/dnt/areas.json";
+  public static final String RESOURCE_DNT_PROVIDER_TRIP = "provider/dnt/trip.json";
+  public static final String RESOURCE_DNT_PROVIDER_TRIPS_ID = "provider/dnt/trips_id.json";
 
   /**
    * Read value from a resource file.

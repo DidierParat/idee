@@ -1,5 +1,7 @@
 package com.github.didierparat.idee.provider.client;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,8 +17,10 @@ import java.time.Instant;
 @Service
 public class AdaptiveClient {
 
-  private static final String RATE_LIMIT_REMAINING_HEADER_FIELD = "X-RateLimit-Remaining";
-  private static final String RATE_LIMIT_RESET_HEADER_FIELD = "X-RateLimit-Reset";
+  @VisibleForTesting
+  static final String RATE_LIMIT_REMAINING_HEADER_FIELD = "X-RateLimit-Remaining";
+  @VisibleForTesting
+  static final String RATE_LIMIT_RESET_HEADER_FIELD = "X-RateLimit-Reset";
 
   private final RateLimit rateLimit;
   private final RestTemplate restTemplate;
@@ -80,7 +84,7 @@ public class AdaptiveClient {
     }
 
     private boolean resetTimeIsPassed() {
-      long now = Instant.now().toEpochMilli();
+      final long now = Instant.now().toEpochMilli();
       return resetTime < now;
     }
 

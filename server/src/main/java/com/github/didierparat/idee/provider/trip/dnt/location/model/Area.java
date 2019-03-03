@@ -7,7 +7,7 @@ import com.github.didierparat.idee.provider.common.dnt.BasicData;
 import com.github.didierparat.idee.provider.common.dnt.DntConstants;
 import com.github.didierparat.idee.provider.common.dnt.baseobjects.Link;
 import com.github.didierparat.idee.provider.common.dnt.baseobjects.PolygonGeoJson;
-import com.github.didierparat.idee.model.nested.Location;
+import com.github.didierparat.idee.provider.trip.dnt.location.model.nested.Location;
 
 import java.io.Serializable;
 import java.util.List;
@@ -156,7 +156,7 @@ public class Area extends BasicData implements Serializable {
     this.hikeMap = hikeMap;
 
     if (polygonGeoJson == null) {
-      this.center = new Location(Float.MIN_VALUE, Float.MIN_VALUE);
+      this.center = new Location(Double.MIN_VALUE, Double.MIN_VALUE);
     } else {
       this.center = computeCenterOfPolygon();
     }
@@ -164,14 +164,14 @@ public class Area extends BasicData implements Serializable {
 
   private Location computeCenterOfPolygon() {
     final PolygonGeoJson areaPolygon = this.getPolygonGeoJson();
-    Float[][] polygonCoordinates = areaPolygon.getCoordinates()[0];
-    Float lowestLongitude = Float.MAX_VALUE;
-    Float highestLongitude = Float.MIN_VALUE;
-    Float lowestLatitude = Float.MAX_VALUE;
-    Float highestLatitude = Float.MIN_VALUE;
+    Double[][] polygonCoordinates = areaPolygon.getCoordinates()[0];
+    Double lowestLongitude = Double.MAX_VALUE;
+    Double highestLongitude = Double.MIN_VALUE;
+    Double lowestLatitude = Double.MAX_VALUE;
+    Double highestLatitude = Double.MIN_VALUE;
     for (int i = 0; i < polygonCoordinates.length; ++i) {
-      final Float longitude = polygonCoordinates[i][0];
-      final Float latitude = polygonCoordinates[i][1];
+      final Double longitude = polygonCoordinates[i][0];
+      final Double latitude = polygonCoordinates[i][1];
       if (longitude < lowestLongitude) {
         lowestLongitude = longitude;
       }
@@ -185,9 +185,9 @@ public class Area extends BasicData implements Serializable {
         highestLatitude = latitude;
       }
     }
-    final Float longitudeOfPolygonCenter
+    final Double longitudeOfPolygonCenter
         = lowestLongitude + ((highestLongitude - lowestLongitude) / 2);
-    final Float latitudeOfPolygonCenter
+    final Double latitudeOfPolygonCenter
         = lowestLatitude + ((highestLatitude - lowestLatitude) / 2);
     return new Location(longitudeOfPolygonCenter, latitudeOfPolygonCenter);
   }

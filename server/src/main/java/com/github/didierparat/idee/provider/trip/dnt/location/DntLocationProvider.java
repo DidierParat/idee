@@ -15,13 +15,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class DntLocationProvider {
 
   private static final String SKIP_PARAM = "skip";
-  private static final int MAX_OBJECTS_PER_REQUEST_INT = Integer.valueOf(
+  private static final Integer MAX_OBJECTS_PER_REQUEST_INT = Integer.valueOf(
       DntConstants.MAX_OBJECTS_PER_REQUEST);
 
   private final List<Area> areas;
@@ -46,8 +47,20 @@ public class DntLocationProvider {
         areas.add(area);
       }
     } catch (ClientException exception) {
-      log.error("Could not populate DntLocationProvider from DNT. Caught exception: " + exception);
+      log.error("Could not populate DntLocationProvider from DNT.", exception);
     }
+  }
+
+  public List<Area> getAreasInRange(
+      final String longitudeString, final String latitudeString, final String searchRadiusString) {
+
+    final Double longitude = Double.valueOf(longitudeString);
+    final Double latitudeA = Double.valueOf(latitudeString);
+    final Integer searchRadius = Integer.valueOf(searchRadiusString);
+    return areas
+        .stream()
+        .filter(area -> areaIsInSearchRadius(longitude, latitudeA, searchRadius, area))
+        .collect(Collectors.toList());
   }
 
   private Area getArea(final String areaId) throws ClientException {
@@ -121,7 +134,32 @@ public class DntLocationProvider {
     return objectIds;
   }
 
-  public List<Area> getAreas() {
-    return areas;
+  private Integer distanceInKm(
+      final Double longitudeA,
+      final Double latitudeA,
+      final Double longitudeB,
+      final Double latitudeB) {
+
+    Integer earthRadiusKm = 6371;
+    Double deltaLatitude = Math.toRadians(latitudeB - latitudeA);
+    Double deltaLongitude = Math.toRadians(longitudeB - longitudeA);
+    Double haversineA = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2)
+        + Math.cos(Math.toRadians(latitudeA))
+        * Math.cos(Math.toRadians(latitudeB))
+        * Math.sin(deltaLongitude / 2)
+        * Math.sin(deltaLongitude / 2);
+    Double haversineC = 2 * Math.atan2(Math.sqrt(haversineA), Math.sqrt(1 - haversineA));
+    Double dist = (earthRadiusKm * haversineC);
+    return dist.intValue();
+  }
+
+  private boolean areaIsInSearchRadius(
+      final Double longitude,
+      final Double latitude,
+      final Integer searchRadius,
+      final Area area) {
+    Integer distance = distanceInKm(
+        longitude, latitude, area.getCenter().getLongitude(), area.getCenter().getLatitude());
+    return distance < searchRadius;
   }
 }
